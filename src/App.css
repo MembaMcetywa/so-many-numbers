@@ -1,3 +1,12 @@
 .app {
   gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  width: 450px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 0.125rem;
 }
