@@ -4,10 +4,10 @@ This is a phone number generator application that generates random numbers using
 
 The project is built using the following:
 
---Vite
---TypeScript
---NestJs
---MongoDB
+--Vite <br />
+--TypeScript <br />
+--NestJs <br />
+--MongoDB <br />
 --Docker
 
 # Docker
