@@ -1,27 +1,28 @@
-# React + TypeScript + Vite
+# So Many Numbers, I Lost Count at 122
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a phone number generator application that generates random numbers using Randommer and validates them against google's libphonenumber library to pull valid phone numbers.
 
-Currently, two official plugins are available:
+The project is built using the following:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+--Vite
+--TypeScript
+--NestJs
+--MongoDB
+--Docker
 
-## Expanding the ESLint configuration
+# Docker
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+To get the MongoDB container up and running, execute the following commands:
 
-- Configure the top-level `parserOptions` property like this:
+1. `cd so-many-numbers`
+2. `docker-compose up -d`
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+You can check if the container is up by running the following command:
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+`docker ps`
+
+This should show you an entry of the mongodb container in the list of running containers. This check confirms to us whether or not the container is running successfully.
+
+Should you wish to you stop the container from running, execute the following command:
+
+`docker compose down`
