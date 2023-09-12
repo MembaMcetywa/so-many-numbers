@@ -1,6 +1,7 @@
 import { TextInput, Button, Box } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 import countriesData from "./countryData.json";
+import "./App.css";
 
 type Country = {
   name: string;
@@ -19,7 +20,7 @@ const App = () => {
     setValue(trimmedValue);
     console.log(trimmedValue);
     const isMatchingDialCode = countries.some((country) => {
-      return country.dial_code === e.target.value;
+      return country.dial_code === trimmedValue;
     });
 
     console.log(isMatchingDialCode);
@@ -29,10 +30,6 @@ const App = () => {
     } else {
       setError("Invalid country code");
     }
-  };
-
-  const onSubmitHandler = () => {
-    console.log(selectedCountry);
   };
 
   return (
@@ -55,10 +52,23 @@ const App = () => {
           onChange={handleChange}
           placeholder="+27"
         />
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div
+            className="error"
+            style={{ color: "#C00D0E", marginTop: "0.125rem" }}
+          >
+            {error}
+          </div>
+        )}
+        <TextInput label="Quantity" size="sm" type="number" placeholder="20" />
       </Box>
-      <Button size="md" onClick={onSubmitHandler} type="submit">
-        Generate
+      <Button
+        variant="gradient"
+        gradient={{ from: "teal", to: "lime", deg: 105 }}
+        size="sm"
+        type="submit"
+      >
+        Generate Phone Numbers
       </Button>
     </div>
   );
