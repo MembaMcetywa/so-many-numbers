@@ -1,5 +1,6 @@
+import { useState } from "react";
+import axios from "axios";
 import { TextInput, Button, Box } from "@mantine/core";
-import { ChangeEvent, useState } from "react";
 import countriesData from "./countryData.json";
 import "./App.css";
 
@@ -10,26 +11,55 @@ type Country = {
 };
 
 const App = () => {
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const [value, setValue] = useState<string>("");
+  const [countryCode, setCountryCode] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(0); // State can hold a number or an empty string
   const countries: Country[] = countriesData;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const trimmedValue = e.target.value.trim();
-    setValue(trimmedValue);
-    console.log(trimmedValue);
-    const isMatchingDialCode = countries.some((country) => {
-      return country.dial_code === trimmedValue;
-    });
+  const randommerUrl = import.meta.env.REACT_APP_RANDOMMER_URL || "";
+  const randommerKey = "76cb90b6c80444e19fa849244276493f";
 
-    console.log(isMatchingDialCode);
+  const generatePhoneNumbers = async () => {
+    try {
+      const response = await axios.get(
+        `https://randommer.io/api/Phone/Generate?CountryCode=${countryCode}&Quantity=${quantity}`,
+        {
+          headers: {
+            "x-api-key": randommerKey,
+          },
+        }
+      );
+      console.log("Generated Phone Numbers:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleCountryCodeChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const trimmedValue = e.target.value.trim();
+    setCountryCode(trimmedValue);
+    if (trimmedValue === "") {
+      setError("");
+      return;
+    }
+    const isMatchingDialCode = countries.some((country) => {
+      return country.code === trimmedValue;
+    });
 
     if (isMatchingDialCode) {
       setError("");
     } else {
       setError("Invalid country code");
     }
+  };
+
+  const handleQuantityChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const parsedValue = parseInt(e.target.value);
+    setQuantity(parsedValue);
   };
 
   return (
@@ -48,9 +78,9 @@ const App = () => {
         <TextInput
           label="Country Code"
           size="sm"
-          value={value}
-          onChange={handleChange}
-          placeholder="+27"
+          value={countryCode}
+          onChange={handleCountryCodeChange}
+          placeholder="ZA"
         />
         {error && (
           <div
@@ -60,13 +90,21 @@ const App = () => {
             {error}
           </div>
         )}
-        <TextInput label="Quantity" size="sm" type="number" placeholder="20" />
+        <TextInput
+          value={quantity}
+          onChange={handleQuantityChange}
+          label="Quantity"
+          size="sm"
+          type="number"
+          placeholder="20"
+        />
       </Box>
       <Button
         variant="gradient"
         gradient={{ from: "teal", to: "lime", deg: 105 }}
         size="sm"
         type="submit"
+        onClick={generatePhoneNumbers}
       >
         Generate Phone Numbers
       </Button>
