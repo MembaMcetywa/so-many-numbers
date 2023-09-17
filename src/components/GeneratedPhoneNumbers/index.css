@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap");
+
+.generated-numbers {
+  font-family: "Poppins", sans-serif;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  padding: 0 0.5rem;
+}
+
+.generated-numbers > h2 {
+  font-size: 1.5rem;
+  color: rgb(195, 195, 195);
+}
+
+.generated-numbers-list::-webkit-scrollbar {
+  display: none;
+}
+
+.generated-numbers-list {
+  list-style-type: none;
+  padding: 0;
+  height: 200px;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.generated-numbers-list-item {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #666;
+  height: 4rem;
+  background-color: #f5f5f5;
+  border: 1px solid #d2d1d1;
+  border-radius: 4px;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.generated-numbers-list-item:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+.no-generated-numbers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.no-generated-numbers > h2 {
+  font-size: 1.5rem;
+  color: rgb(195, 195, 195);
+}
