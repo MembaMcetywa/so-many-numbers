@@ -1,6 +1,6 @@
 import React from "react";
 import { TextInput, Button, Box } from "@mantine/core";
-import "./Form.css";
+import "./index.css";
 
 type FormProps = {
   countryCode: string;
