@@ -2,8 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import countriesData from "./countryData.json";
 import "./App.css";
-import Welcome from "./components/Welcome";
-import Form from "./components/Form";
+import Welcome from "./components/Welcome/index";
+import Form from "./components/Form/index";
+import GeneratedPhoneNumbers from "./components/GeneratedPhoneNumbers/index";
 
 type Country = {
   name: string;
@@ -11,14 +12,21 @@ type Country = {
   code: string;
 };
 
+type PhoneNumber = {
+  extractedPhoneNumber: string;
+  isValid: boolean;
+  isPhoneNumberPossible: boolean;
+};
+
 const App = () => {
   const [countryCode, setCountryCode] = useState<string>("");
   const [countryCodeError, setCountryCodeError] = useState<string>("");
   const [quantityError, setQuantityError] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(0);
-  const [generatedPhoneNumbers, setGeneratedPhoneNumbers] = useState<string[]>(
-    []
-  );
+  const [generatedPhoneNumbers, setGeneratedPhoneNumbers] = useState<
+    PhoneNumber[]
+  >([]);
+
   const countries: Country[] = countriesData;
 
   const randommerEndpoint = import.meta.env
@@ -51,9 +59,14 @@ const App = () => {
   const handleQuantityChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    const parsedValue = parseInt(e.target.value.trim());
-    setQuantity(parsedValue);
-    if (parsedValue <= 0 || parsedValue > 1000) {
+    const quantityValue = e.target.value.trim();
+    const parsedQuantityValue = parseInt(e.target.value.trim());
+    setQuantity(parsedQuantityValue);
+    if (
+      parsedQuantityValue <= 0 ||
+      parsedQuantityValue > 1000 ||
+      quantityValue.trim() === ""
+    ) {
       setQuantityError("Quantity must be between 1 and 1000");
     } else {
       setQuantityError("");
@@ -105,16 +118,21 @@ const App = () => {
 
   return (
     <div className="app">
-      <Welcome />
-      <Form
-        countryCode={countryCode}
-        onCountryCodeChange={handleCountryCodeChange}
-        quantity={quantity}
-        onQuantityChange={handleQuantityChange}
-        onGenerateClick={generatePhoneNumbers}
-        countryCodeError={countryCodeError}
-        quantityError={quantityError}
-      />
+      <div className="input">
+        <Welcome />
+        <Form
+          countryCode={countryCode}
+          onCountryCodeChange={handleCountryCodeChange}
+          quantity={quantity}
+          onQuantityChange={handleQuantityChange}
+          onGenerateClick={generatePhoneNumbers}
+          countryCodeError={countryCodeError}
+          quantityError={quantityError}
+        />
+      </div>
+      <div className="output">
+        <GeneratedPhoneNumbers generatedPhoneNumbers={generatedPhoneNumbers} />
+      </div>
     </div>
   );
 };
