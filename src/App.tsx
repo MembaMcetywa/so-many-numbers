@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { TextInput, Button, Box } from "@mantine/core";
 import countriesData from "./countryData.json";
 import "./App.css";
+import Welcome from "./components/Welcome";
+import Form from "./components/Form";
 
 type Country = {
   name: string;
@@ -27,19 +28,54 @@ const App = () => {
   const validationEndpoint = import.meta.env
     .VITE_VALIDATE_PHONE_NUMBERS_ENDPOINT;
 
+  const handleCountryCodeChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const trimmedValue = e.target.value.trim();
+    setCountryCode(trimmedValue);
+    if (trimmedValue === "") {
+      setCountryCodeError("");
+      return;
+    }
+    const isMatchingDialCode = countries.some((country) => {
+      return country.code === trimmedValue;
+    });
+
+    if (isMatchingDialCode) {
+      setCountryCodeError("");
+    } else {
+      setCountryCodeError("Invalid country code");
+    }
+  };
+
+  const handleQuantityChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const parsedValue = parseInt(e.target.value.trim());
+    setQuantity(parsedValue);
+    if (parsedValue <= 0 || parsedValue > 1000) {
+      setQuantityError("Quantity must be between 1 and 1000");
+    } else {
+      setQuantityError("");
+    }
+  };
+
   const generatePhoneNumbers = async () => {
-    // Validate input fields before making the request
     if (countryCode.trim() === "") {
       setCountryCodeError("Country code is required");
       return;
+    } else if (quantity == null || quantity == 0) {
+      setQuantityError("Quantity is required");
+      return;
     } else {
-      setCountryCodeError(""); // Clear the error if valid
+      setCountryCodeError("");
+      setQuantityError("");
     }
     if (quantity <= 0 || quantity > 1000) {
       setQuantityError("Quantity must be between 1 and 1000");
       return;
     } else {
-      setQuantityError(""); // Clear the error if valid
+      setQuantityError("");
     }
     try {
       const response = await axios.get(
@@ -67,99 +103,18 @@ const App = () => {
     }
   };
 
-  const handleCountryCodeChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const trimmedValue = e.target.value.trim();
-    setCountryCode(trimmedValue);
-    if (trimmedValue === "") {
-      setCountryCodeError("Country code is required");
-    } else {
-      setCountryCodeError(""); // Clear the error if valid
-    }
-  };
-
-  const handleQuantityChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const parsedValue = parseInt(e.target.value.trim());
-    setQuantity(parsedValue);
-    if (parsedValue <= 0 || parsedValue > 1000) {
-      setQuantityError("Quantity must be between 1 and 1000");
-    } else {
-      setQuantityError(""); // Clear the error if valid
-    }
-  };
-
   return (
     <div className="app">
-      <Box
-        maw={500}
-        mx="auto"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          width: "10rem",
-          height: "auto",
-        }}
-      >
-        <TextInput
-          label="Country Code"
-          size="sm"
-          value={countryCode}
-          onChange={handleCountryCodeChange}
-          placeholder="ZA"
-        />
-        {countryCodeError && (
-          <div
-            className="error"
-            style={{ color: "#C00D0E", marginTop: "0.125rem" }}
-          >
-            {countryCodeError}
-          </div>
-        )}
-        <TextInput
-          value={quantity}
-          onChange={handleQuantityChange}
-          label="Quantity"
-          size="sm"
-          type="number"
-          placeholder="20"
-        />
-        {quantityError && (
-          <div
-            className="error"
-            style={{
-              display: "flex",
-              width: "250px",
-              color: "#C00D0E",
-              marginTop: "0.125rem !important",
-            }}
-          >
-            {quantityError}
-          </div>
-        )}
-      </Box>
-      <Button
-        variant="gradient"
-        gradient={{ from: "teal", to: "lime", deg: 105 }}
-        type="submit"
-        onClick={generatePhoneNumbers}
-      >
-        Generate Phone Numbers
-      </Button>
-
-      {/* {generatedPhoneNumbers.length > 0 && (
-        <div className="generated-numbers">
-          <h2>Generated Phone Numbers:</h2>
-          <ul>
-            {generatedPhoneNumbers.map((number, index) => (
-              <li key={index}>{number}</li>
-            ))}
-          </ul>
-        </div>
-      )} */}
+      <Welcome />
+      <Form
+        countryCode={countryCode}
+        onCountryCodeChange={handleCountryCodeChange}
+        quantity={quantity}
+        onQuantityChange={handleQuantityChange}
+        onGenerateClick={generatePhoneNumbers}
+        countryCodeError={countryCodeError}
+        quantityError={quantityError}
+      />
     </div>
   );
 };
