@@ -8,12 +8,25 @@ body {
 }
 
 .app {
-  gap: 0.5rem;
+  gap: 4rem;
   display: flex;
-  flex-direction: column;
+  padding: 0 2rem;
   justify-content: space-between;
+
+  @media screen and (max-width: 900px) {
+    flex-direction: column;
+  }
+}
+
+.input {
   width: 29rem;
-  height: 60vh;
+
+  max-height: 300px;
+}
+.output {
+  width: 29rem;
+
+  max-height: 300px;
 }
 
 .error {
