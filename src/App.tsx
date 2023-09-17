@@ -12,24 +12,56 @@ type Country = {
 
 const App = () => {
   const [countryCode, setCountryCode] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(0); // State can hold a number or an empty string
+  const [countryCodeError, setCountryCodeError] = useState<string>("");
+  const [quantityError, setQuantityError] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(0);
+  const [generatedPhoneNumbers, setGeneratedPhoneNumbers] = useState<string[]>(
+    []
+  );
   const countries: Country[] = countriesData;
 
-  const randommerUrl = import.meta.env.REACT_APP_RANDOMMER_URL || "";
-  const randommerKey = "76cb90b6c80444e19fa849244276493f";
+  const randommerEndpoint = import.meta.env
+    .VITE_RANDOMMER_GENERATE_ENDPOINT_BASE;
+
+  const randommerAPIKey = import.meta.env.VITE_RANDOMMER_API_KEY;
+  const validationEndpoint = import.meta.env
+    .VITE_VALIDATE_PHONE_NUMBERS_ENDPOINT;
 
   const generatePhoneNumbers = async () => {
+    // Validate input fields before making the request
+    if (countryCode.trim() === "") {
+      setCountryCodeError("Country code is required");
+      return;
+    } else {
+      setCountryCodeError(""); // Clear the error if valid
+    }
+    if (quantity <= 0 || quantity > 1000) {
+      setQuantityError("Quantity must be between 1 and 1000");
+      return;
+    } else {
+      setQuantityError(""); // Clear the error if valid
+    }
     try {
       const response = await axios.get(
-        `https://randommer.io/api/Phone/Generate?CountryCode=${countryCode}&Quantity=${quantity}`,
+        `${randommerEndpoint}CountryCode=${countryCode}&Quantity=${quantity}`,
         {
           headers: {
-            "x-api-key": randommerKey,
+            "x-api-key": randommerAPIKey,
           },
         }
       );
       console.log("Generated Phone Numbers:", response.data);
+      await axios
+        .post(validationEndpoint, {
+          phoneNumbers: response.data,
+        })
+        .then((response) => {
+          setGeneratedPhoneNumbers(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error("Error validating phone number:", error);
+        });
     } catch (error) {
       console.error("Error:", error);
     }
@@ -41,25 +73,22 @@ const App = () => {
     const trimmedValue = e.target.value.trim();
     setCountryCode(trimmedValue);
     if (trimmedValue === "") {
-      setError("");
-      return;
-    }
-    const isMatchingDialCode = countries.some((country) => {
-      return country.code === trimmedValue;
-    });
-
-    if (isMatchingDialCode) {
-      setError("");
+      setCountryCodeError("Country code is required");
     } else {
-      setError("Invalid country code");
+      setCountryCodeError(""); // Clear the error if valid
     }
   };
 
   const handleQuantityChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    const parsedValue = parseInt(e.target.value);
+    const parsedValue = parseInt(e.target.value.trim());
     setQuantity(parsedValue);
+    if (parsedValue <= 0 || parsedValue > 1000) {
+      setQuantityError("Quantity must be between 1 and 1000");
+    } else {
+      setQuantityError(""); // Clear the error if valid
+    }
   };
 
   return (
@@ -82,12 +111,12 @@ const App = () => {
           onChange={handleCountryCodeChange}
           placeholder="ZA"
         />
-        {error && (
+        {countryCodeError && (
           <div
             className="error"
             style={{ color: "#C00D0E", marginTop: "0.125rem" }}
           >
-            {error}
+            {countryCodeError}
           </div>
         )}
         <TextInput
@@ -98,16 +127,39 @@ const App = () => {
           type="number"
           placeholder="20"
         />
+        {quantityError && (
+          <div
+            className="error"
+            style={{
+              display: "flex",
+              width: "250px",
+              color: "#C00D0E",
+              marginTop: "0.125rem !important",
+            }}
+          >
+            {quantityError}
+          </div>
+        )}
       </Box>
       <Button
         variant="gradient"
         gradient={{ from: "teal", to: "lime", deg: 105 }}
-        size="sm"
         type="submit"
         onClick={generatePhoneNumbers}
       >
         Generate Phone Numbers
       </Button>
+
+      {/* {generatedPhoneNumbers.length > 0 && (
+        <div className="generated-numbers">
+          <h2>Generated Phone Numbers:</h2>
+          <ul>
+            {generatedPhoneNumbers.map((number, index) => (
+              <li key={index}>{number}</li>
+            ))}
+          </ul>
+        </div>
+      )} */}
     </div>
   );
 };
