@@ -19,9 +19,3 @@ To get client app running, execute the following commands:
 
 At this point the client should be running successfully. Please continue to setup the backend app here:
 `https://github.com/MembaMcetywa/backend/blob/main/README.md`
-
-This should show you an entry of the mongodb container in the list of running containers. This check confirms to us whether or not the container is running successfully.
-
-Should you wish to you stop the container from running, execute the following command:
-
-`docker compose down`
