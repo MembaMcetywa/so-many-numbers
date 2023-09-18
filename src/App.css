@@ -8,14 +8,17 @@ body {
 }
 
 .app {
-  gap: 4rem;
   display: flex;
   padding: 0 2rem;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 4rem 0;
+}
 
-  @media screen and (max-width: 900px) {
-    flex-direction: column;
-  }
+.app-input-output-wrapper {
+  display: flex;
+  gap: 4rem;
+  padding: 0 2rem;
+  justify-content: space-between;
 }
 
 .input {

@@ -1,21 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
+import { useDisclosure } from "@mantine/hooks";
 import countriesData from "./countryData.json";
 import "./App.css";
 import Welcome from "./components/Welcome/index";
 import Form from "./components/Form/index";
-import GeneratedPhoneNumbers from "./components/GeneratedPhoneNumbers/index";
+import GeneratedPhoneNumbers, {
+  PhoneNumber,
+} from "./components/GeneratedPhoneNumbers/index";
+import StatsModal from "./components/StatsModal";
 
 type Country = {
   name: string;
   dial_code: string;
   code: string;
-};
-
-type PhoneNumber = {
-  extractedPhoneNumber: string;
-  isValid: boolean;
-  isPhoneNumberPossible: boolean;
 };
 
 const App = () => {
@@ -26,6 +24,7 @@ const App = () => {
   const [generatedPhoneNumbers, setGeneratedPhoneNumbers] = useState<
     PhoneNumber[]
   >([]);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const countries: Country[] = countriesData;
 
@@ -107,6 +106,7 @@ const App = () => {
         .then((response) => {
           setGeneratedPhoneNumbers(response.data);
           console.log(response.data);
+          return;
         })
         .catch((error) => {
           console.error("Error validating phone number:", error);
@@ -118,20 +118,33 @@ const App = () => {
 
   return (
     <div className="app">
-      <div className="input">
-        <Welcome />
-        <Form
-          countryCode={countryCode}
-          onCountryCodeChange={handleCountryCodeChange}
-          quantity={quantity}
-          onQuantityChange={handleQuantityChange}
-          onGenerateClick={generatePhoneNumbers}
-          countryCodeError={countryCodeError}
-          quantityError={quantityError}
-        />
+      {/* change to app-input */}
+      <div className="app-input-output-wrapper">
+        <div className="input">
+          <Welcome />
+          <Form
+            countryCode={countryCode}
+            onCountryCodeChange={handleCountryCodeChange}
+            quantity={quantity}
+            onQuantityChange={handleQuantityChange}
+            onGenerateClick={generatePhoneNumbers}
+            countryCodeError={countryCodeError}
+            quantityError={quantityError}
+          />
+        </div>
+        <div className="output">
+          <GeneratedPhoneNumbers
+            generatedPhoneNumbers={generatedPhoneNumbers}
+          />
+        </div>
       </div>
-      <div className="output">
-        <GeneratedPhoneNumbers generatedPhoneNumbers={generatedPhoneNumbers} />
+      <div className="app-stats-modal">
+        <StatsModal
+          quantity={quantity}
+          validationResults={generatedPhoneNumbers}
+          onClose={close}
+          opened={opened}
+        />
       </div>
     </div>
   );
