@@ -1,25 +1,24 @@
-# So Many Numbers, I Lost Count at 122
+# Client
 
-This is a phone number generator application that generates random numbers using Randommer and validates them against google's libphonenumber library to pull valid phone numbers.
+This is a phone number generator user interface.
 
 The project is built using the following:
 
 --Vite <br />
 --TypeScript <br />
---NestJs <br />
---MongoDB <br />
---Docker
 
-# Docker
+# Get Started
 
-To get the MongoDB container up and running, execute the following commands:
+To get client app running, execute the following commands:
 
-1. `cd so-many-numbers`
-2. `docker-compose up -d`
+1. `git clone git@github.com:MembaMcetywa/so-many-numbers.git`
+2. `cd client`
+3. `npm install`
+4. `npm run dev`
+5. `http://127.0.0.1:8080/`
 
-You can check if the container is up by running the following command:
-
-`docker ps`
+At this point the client should be running successfully. Please continue to setup the backend app here:
+`https://github.com/MembaMcetywa/backend/blob/main/README.md`
 
 This should show you an entry of the mongodb container in the list of running containers. This check confirms to us whether or not the container is running successfully.
 
