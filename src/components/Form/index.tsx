@@ -1,8 +1,7 @@
-import React from "react";
 import { TextInput, Button, Box } from "@mantine/core";
 import "./index.css";
 
-type FormProps = {
+export type FormProps = {
   countryCode: string;
   onCountryCodeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   quantity: number;
@@ -14,9 +13,9 @@ type FormProps = {
 
 const Form: React.FC<FormProps> = ({
   countryCode,
-  onCountryCodeChange,
+  onCountryCodeChange = () => {},
   quantity,
-  onQuantityChange,
+  onQuantityChange = () => {},
   onGenerateClick,
   countryCodeError,
   quantityError,
@@ -40,6 +39,7 @@ const Form: React.FC<FormProps> = ({
           value={countryCode}
           onChange={onCountryCodeChange}
           placeholder="ZA"
+          data-testid="countryCodeInput"
         />
         {countryCodeError && (
           <div
@@ -56,6 +56,7 @@ const Form: React.FC<FormProps> = ({
           size="sm"
           type="number"
           placeholder="20"
+          data-testid="quantityInput"
         />
         {quantityError && (
           <div
